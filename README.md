@@ -1,7 +1,5 @@
 ## Overview
 
-For testing old method deployment. Due to time constraints, not all potential improvements and features were implemented. Below are the current limitations and areas for enhancement.
-
 ![image/overview.png](./image/overview.png)
 
 We can switch the load balancer to serve traffic to either the blue or green environment. This allows us to have an internal load balancer that correctly chooses the test environment and exposes the desired deployment.
@@ -20,6 +18,8 @@ ansible [core 2.17.0]
 ```
 
 ## Known Issues and Areas for Improvement
+
+For testing old method deployment. Due to time constraints, not all potential improvements and features were implemented. Below are the current limitations and areas for enhancement.
 
 1. **SSL/TLS Implementation**
    - **Current State**: Basic implementation or none.
