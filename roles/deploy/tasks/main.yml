@@ -1,0 +1,49 @@
+---
+# tasks file for deploy
+- name: Install yum packages with_items
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - unzip
+    - python3
+    - python3-pip
+
+- name: Set deployment name based on is_blue
+  set_fact:
+    deployment_name: "{{ 'blue' if is_blue else 'green' }}"
+
+- name: Output deployment_name
+  debug:
+    msg: "Deployment name is {{ deployment_name }}"
+
+- name: Ensure des exists
+  file:
+    path: "{{ destination_path }}/{{ deployment_name }}"
+    state: directory
+
+- name: Copy zip file to remote host
+  copy:
+    src: "{{ source_zip_path }}"
+    dest: "{{ destination_path }}/{{ deployment_name }}/tmp.zip"
+    mode: "0644"
+
+- name: Extract zip file
+  ansible.builtin.unarchive:
+    src: "{{ destination_path }}/{{ deployment_name }}/tmp.zip"
+    dest: "{{ destination_path }}/{{ deployment_name }}"
+    remote_src: yes
+
+- name: Install nginx
+  yum:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Delete default nginx vhost symlink
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Setup nginx conf
+  template: src=nginx.conf.tpl
+    dest=/etc/nginx/nginx.conf
+  notify: restart nginx

@@ -1,0 +1,8 @@
+---
+- name: Deploy Blue and extract zip file
+  hosts: api
+  become: yes
+  vars:
+    is_blue: false
+  roles:
+    - deploy
